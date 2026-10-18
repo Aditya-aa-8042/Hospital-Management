@@ -120,7 +120,7 @@ const Home = () => {
 
           {/* Departments */}
           <Link
-            to="/departments"
+            to="/department"
             className="bg-white p-6 rounded-xl shadow-sm hover:shadow-lg transition"
           >
             <div className="text-4xl mb-4">🏥</div>

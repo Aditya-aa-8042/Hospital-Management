@@ -128,7 +128,7 @@ const Dropdown = () => {
             </span>
           </Link>
 
-          <Link
+          {/* <Link
             to="/department"
             onClick={closeDropdown}
             className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition"
@@ -137,7 +137,7 @@ const Dropdown = () => {
             <span className="text-gray-700">
               Department
             </span>
-          </Link>
+          </Link> */}
 
           {/* <Link
             to="/appointments/update"

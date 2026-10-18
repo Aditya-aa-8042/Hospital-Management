@@ -1,0 +1,974 @@
+// 1 {
+//   "role": "user",
+//   "phone": "+919341665963",
+//   "otp": "123456",
+//   "password": "password123",
+//   "fullName": "Abhishek Sirvastav",
+//   "email": "abhi@example.com"
+// }
+
+// 2 {
+//   "role": "user",
+//   "phone": "+919341665960",
+//   "otp": "123456",
+//   "password": "password1235",
+//   "fullName": "Abhishek Sinha",
+//   "email": "abhishek00@example.com"
+// }
+
+// 3 {
+//     "role": "doctor",
+//     "phone": "+919341338658",
+//     "password": "00..00..",
+//     "fullName": "Aayush Singh"
+//     "email": "aayushsingh88@gmail.com"
+// }
+
+
+// Complete Data of the doctor 
+
+// const doctors = [
+//     {
+//       id: 1,
+//       name: "Dr. Ananya Sharma",
+//       gender: "Female",
+//       specialization: "Cardiologist",
+//       disease: "Heart Disease",
+//       experience: 15,
+//       fee: 800,
+//       days: ["Monday", "Wednesday", "Friday"],
+//       time: "10:00 AM - 1:00 PM",
+//       timePeriod: "Morning",
+//       image:
+//         "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 2,
+//       name: "Dr. Rajesh Kumar",
+//       gender: "Male",
+//       specialization: "Dermatologist",
+//       disease: "Skin Problems",
+//       experience: 10,
+//       fee: 600,
+//       days: ["Tuesday", "Thursday", "Saturday"],
+//       time: "11:00 AM - 2:00 PM",
+//       timePeriod: "Morning",
+//       image:
+//         "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 3,
+//       name: "Dr. Priya Verma",
+//       gender: "Female",
+//       specialization: "Gynecologist",
+//       disease: "Women's Health",
+//       experience: 12,
+//       fee: 700,
+//       days: ["Monday", "Tuesday", "Thursday"],
+//       time: "9:00 AM - 12:00 PM",
+//       timePeriod: "Morning",
+//       image:
+//         "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 4,
+//       name: "Dr. Amit Singh",
+//       gender: "Male",
+//       specialization: "Neurologist",
+//       disease: "Brain & Nerve Problems",
+//       experience: 18,
+//       fee: 1000,
+//       days: ["Monday", "Wednesday", "Saturday"],
+//       time: "2:00 PM - 5:00 PM",
+//       timePeriod: "Afternoon",
+//       image:
+//         "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 5,
+//       name: "Dr. Neha Gupta",
+//       gender: "Female",
+//       specialization: "Pediatrician",
+//       disease: "Child Health",
+//       experience: 8,
+//       fee: 500,
+//       days: ["Monday", "Tuesday", "Friday"],
+//       time: "10:00 AM - 1:00 PM",
+//       timePeriod: "Morning",
+//       image:
+//         "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 6,
+//       name: "Dr. Vikash Mehta",
+//       gender: "Male",
+//       specialization: "Orthopedic",
+//       disease: "Bone & Joint Problems",
+//       experience: 14,
+//       fee: 750,
+//       days: ["Tuesday", "Thursday", "Saturday"],
+//       time: "3:00 PM - 6:00 PM",
+//       timePeriod: "Afternoon",
+//       image:
+//         "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 7,
+//       name: "Dr. Sneha Patel",
+//       gender: "Female",
+//       specialization: "General Physician",
+//       disease: "Fever & General Problems",
+//       experience: 7,
+//       fee: 400,
+//       days: ["Monday", "Wednesday", "Friday"],
+//       time: "8:00 AM - 11:00 AM",
+//       timePeriod: "Morning",
+//       image:
+//         "https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     {
+//       id: 8,
+//       name: "Dr. Arjun Roy",
+//       gender: "Male",
+//       specialization: "ENT Specialist",
+//       disease: "Ear, Nose & Throat",
+//       experience: 11,
+//       fee: 650,
+//       days: ["Wednesday", "Friday", "Saturday"],
+//       time: "6:00 PM - 9:00 PM",
+//       timePeriod: "Evening",
+//       image:
+//         "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=500&q=80",
+//     },
+
+//     // ================= NEUROSURGEON =================
+
+//     {
+//       id: 9,
+//       name: "Dr. Rohan Malhotra",
+//       gender: "Male",
+//       specialization: "Neurosurgeon",
+//       disease: "Brain & Nerve Problems",
+//       experience: 20,
+//       fee: 1200,
+//       days: ["Monday", "Wednesday", "Friday"],
+//       time: "4:00 PM - 7:00 PM",
+//       timePeriod: "Evening",
+//       image:
+//         "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=500&q=80",
+//     },
+//   ];
+
+
+// DOCTOR HOME PAGE DEMO CODE
+
+// import { useState, useEffect } from "react";
+// import {
+//   User,
+//   CalendarDays,
+//   Clock,
+//   CheckCircle,
+//   XCircle,
+//   Timer,
+//   Users,
+//   Stethoscope,
+//   Bell,
+//   ChevronRight,
+// } from "lucide-react";
+
+// // Reads from frontend .env: REACT_APP_API_URL=http://localhost:5000
+// const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+// const DoctorHome = () => {
+//   const [activeTab, setActiveTab] = useState("dashboard");
+
+//   const [doctor, setDoctor] = useState(null);
+//   const [appointments, setAppointments] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+//   const [actionError, setActionError] = useState("");
+
+//   const [selectedAppointment, setSelectedAppointment] = useState(null);
+//   const [newDate, setNewDate] = useState("");
+//   const [newTime, setNewTime] = useState("");
+//   const [postponing, setPostponing] = useState(false);
+
+//   const authHeader = () => ({
+//     Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+//   });
+
+//   const parseResponse = async (res) => {
+//     const text = await res.text();
+//     let data = {};
+//     try {
+//       data = text ? JSON.parse(text) : {};
+//     } catch {
+//       data = {};
+//     }
+//     if (!res.ok) {
+//       throw new Error(data.message || `Request failed (status ${res.status})`);
+//     }
+//     return data;
+//   };
+
+//   const fetchDashboardData = async () => {
+//     setLoading(true);
+//     setError("");
+//     try {
+//       const [profileRes, appointmentsRes] = await Promise.all([
+//         fetch(`${API_URL}/api/doctors/me`, { headers: authHeader() }),
+//         fetch(`${API_URL}/api/appointments/doctor`, { headers: authHeader() }),
+//       ]);
+
+//       const profileData = await parseResponse(profileRes);
+//       const appointmentsData = await parseResponse(appointmentsRes);
+
+//       setDoctor(profileData.data);
+//       setAppointments(appointmentsData.data);
+//     } catch (err) {
+//       setError(err.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchDashboardData();
+//   }, []);
+
+//   // Accept appointment -> status: Confirmed
+//   const acceptAppointment = async (id) => {
+//     setActionError("");
+//     try {
+//       const res = await fetch(`${API_URL}/api/appointments/${id}/status`, {
+//         method: "PATCH",
+//         headers: { "Content-Type": "application/json", ...authHeader() },
+//         body: JSON.stringify({ status: "Confirmed" }),
+//       });
+//       const data = await parseResponse(res);
+//       setAppointments((prev) =>
+//         prev.map((a) => (a._id === id ? { ...a, status: data.data.status } : a))
+//       );
+//     } catch (err) {
+//       setActionError(err.message);
+//     }
+//   };
+
+//   // Reject appointment -> status: Cancelled
+//   const rejectAppointment = async (id) => {
+//     setActionError("");
+//     try {
+//       const res = await fetch(`${API_URL}/api/appointments/${id}/status`, {
+//         method: "PATCH",
+//         headers: { "Content-Type": "application/json", ...authHeader() },
+//         body: JSON.stringify({ status: "Cancelled" }),
+//       });
+//       const data = await parseResponse(res);
+//       setAppointments((prev) =>
+//         prev.map((a) => (a._id === id ? { ...a, status: data.data.status } : a))
+//       );
+//     } catch (err) {
+//       setActionError(err.message);
+//     }
+//   };
+
+//   // Open postpone modal - prefill with the appointment's current date/time
+//   const openPostponeModal = (appointment) => {
+//     setSelectedAppointment(appointment);
+//     setNewDate(appointment.appointmentDate?.slice(0, 10) || "");
+//     setNewTime(appointment.appointmentTime || "");
+//     setActionError("");
+//   };
+
+//   // Confirm postponed appointment -> real reschedule on the backend
+//   const confirmPostpone = async () => {
+//     if (!selectedAppointment || !newDate || !newTime) {
+//       setActionError("Please choose both a new date and time");
+//       return;
+//     }
+
+//     setPostponing(true);
+//     setActionError("");
+//     try {
+//       const res = await fetch(
+//         `${API_URL}/api/appointments/${selectedAppointment._id}/postpone`,
+//         {
+//           method: "PATCH",
+//           headers: { "Content-Type": "application/json", ...authHeader() },
+//           body: JSON.stringify({ appointmentDate: newDate, appointmentTime: newTime }),
+//         }
+//       );
+//       const data = await parseResponse(res);
+
+//       setAppointments((prev) =>
+//         prev.map((a) => (a._id === selectedAppointment._id ? data.data : a))
+//       );
+
+//       setSelectedAppointment(null);
+//       setNewDate("");
+//       setNewTime("");
+//     } catch (err) {
+//       setActionError(err.message);
+//     } finally {
+//       setPostponing(false);
+//     }
+//   };
+
+//   const formatDate = (iso) => (iso ? iso.slice(0, 10) : "");
+
+//   const totalAppointments = appointments.length;
+//   const pendingAppointments = appointments.filter((a) => a.status === "Pending").length;
+//   const acceptedAppointments = appointments.filter((a) => a.status === "Confirmed").length;
+//   const rejectedAppointments = appointments.filter((a) => a.status === "Cancelled").length;
+
+//   const statusStyles = {
+//     Confirmed: "bg-green-100 text-green-700",
+//     Cancelled: "bg-red-100 text-red-700",
+//     Postponed: "bg-purple-100 text-purple-700",
+//     Completed: "bg-blue-100 text-blue-700",
+//     Pending: "bg-yellow-100 text-yellow-700",
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+//         <p className="text-gray-500">Loading dashboard...</p>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+//         <div className="bg-red-50 text-red-600 rounded-lg px-6 py-4 max-w-md text-center">
+//           {error}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gray-100">
+
+//       {/* ================= HEADER ================= */}
+
+//       <header className="bg-white shadow-sm border-b">
+
+//         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+//           <div className="flex items-center gap-3">
+
+//             <div className="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center text-white">
+//               <Stethoscope size={24} />
+//             </div>
+
+//             <div>
+//               <h1 className="text-xl font-bold text-gray-800">
+//                 MediCare Doctor
+//               </h1>
+
+//               <p className="text-sm text-gray-500">
+//                 Doctor Dashboard
+//               </p>
+//             </div>
+
+//           </div>
+
+//           <div className="flex items-center gap-5">
+
+//             <button className="relative text-gray-600 hover:text-blue-600">
+//               <Bell size={23} />
+
+//               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+//                 {pendingAppointments}
+//               </span>
+//             </button>
+
+//             <div className="flex items-center gap-3">
+
+//               <div className="text-right hidden sm:block">
+
+//                 <p className="font-semibold text-gray-800">
+//                   Dr. {doctor?.name}
+//                 </p>
+
+//                 <p className="text-sm text-gray-500">
+//                   {doctor?.specialization}
+//                 </p>
+
+//               </div>
+
+//               <div className="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+//                 {doctor?.image ? (
+//                   <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+//                 ) : (
+//                   <User className="text-blue-600" />
+//                 )}
+//               </div>
+
+//             </div>
+
+//           </div>
+
+//         </div>
+
+//       </header>
+
+
+//       {/* ================= MAIN ================= */}
+
+//       <div className="max-w-7xl mx-auto px-6 py-8">
+
+//         {actionError && (
+//           <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+//             {actionError}
+//           </div>
+//         )}
+
+//         {/* ================= DOCTOR PROFILE ================= */}
+
+//         <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
+
+//           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+
+//             <div className="flex items-center gap-5">
+
+//               <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+//                 {doctor?.image ? (
+//                   <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+//                 ) : (
+//                   <User size={50} className="text-blue-600" />
+//                 )}
+//               </div>
+
+//               <div>
+
+//                 <p className="text-sm text-blue-600 font-semibold">
+//                   DOCTOR PROFILE
+//                 </p>
+
+//                 <h2 className="text-2xl font-bold text-gray-800 mt-1">
+//                   Dr. {doctor?.name}
+//                 </h2>
+
+//                 <p className="text-gray-500 mt-1">
+//                   {doctor?.specialization} • {doctor?.experience} Years Experience
+//                 </p>
+
+//                 <p className="text-gray-500 text-sm mt-1">
+//                   Available: {doctor?.availableTime || "Not set"}
+//                 </p>
+
+//               </div>
+
+//             </div>
+
+//             <button
+//               onClick={() => setActiveTab("appointments")}
+//               className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center gap-2"
+//             >
+//               View Appointments
+
+//               <ChevronRight size={20} />
+
+//             </button>
+
+//           </div>
+
+//         </div>
+
+
+//         {/* ================= DASHBOARD / APPOINTMENTS ================= */}
+
+//         {activeTab === "dashboard" ? (
+
+//           <>
+//             <div className="flex justify-between items-center mb-6">
+
+//               <div>
+
+//                 <h2 className="text-2xl font-bold text-gray-800">
+//                   Dashboard Overview
+//                 </h2>
+
+//                 <p className="text-gray-500">
+//                   Manage your appointments and patients
+//                 </p>
+
+//               </div>
+
+//             </div>
+
+
+//             {/* ================= STATISTICS ================= */}
+
+//             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+//               <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+//                 <div className="flex justify-between items-center">
+
+//                   <div>
+
+//                     <p className="text-gray-500">
+//                       Total Appointments
+//                     </p>
+
+//                     <h3 className="text-3xl font-bold text-gray-800 mt-2">
+//                       {totalAppointments}
+//                     </h3>
+
+//                   </div>
+
+//                   <CalendarDays
+//                     size={36}
+//                     className="text-blue-600"
+//                   />
+
+//                 </div>
+
+//               </div>
+
+
+//               <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+//                 <div className="flex justify-between items-center">
+
+//                   <div>
+
+//                     <p className="text-gray-500">
+//                       Pending Requests
+//                     </p>
+
+//                     <h3 className="text-3xl font-bold text-yellow-600 mt-2">
+//                       {pendingAppointments}
+//                     </h3>
+
+//                   </div>
+
+//                   <Clock
+//                     size={36}
+//                     className="text-yellow-500"
+//                   />
+
+//                 </div>
+
+//               </div>
+
+
+//               <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+//                 <div className="flex justify-between items-center">
+
+//                   <div>
+
+//                     <p className="text-gray-500">
+//                       Accepted
+//                     </p>
+
+//                     <h3 className="text-3xl font-bold text-green-600 mt-2">
+//                       {acceptedAppointments}
+//                     </h3>
+
+//                   </div>
+
+//                   <CheckCircle
+//                     size={36}
+//                     className="text-green-500"
+//                   />
+
+//                 </div>
+
+//               </div>
+
+
+//               <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+//                 <div className="flex justify-between items-center">
+
+//                   <div>
+
+//                     <p className="text-gray-500">
+//                       Rejected
+//                     </p>
+
+//                     <h3 className="text-3xl font-bold text-red-600 mt-2">
+//                       {rejectedAppointments}
+//                     </h3>
+
+//                   </div>
+
+//                   <XCircle
+//                     size={36}
+//                     className="text-red-500"
+//                   />
+
+//                 </div>
+
+//               </div>
+
+//             </div>
+
+
+//             {/* ================= RECENT APPOINTMENTS ================= */}
+
+//             <div className="bg-white rounded-2xl shadow-sm p-6">
+
+//               <div className="flex justify-between items-center mb-6">
+
+//                 <div>
+
+//                   <h2 className="text-xl font-bold text-gray-800">
+//                     Recent Appointment Requests
+//                   </h2>
+
+//                   <p className="text-gray-500 text-sm">
+//                     Latest patient appointment requests
+//                   </p>
+
+//                 </div>
+
+//                 <button
+//                   onClick={() => setActiveTab("appointments")}
+//                   className="text-blue-600 font-semibold hover:underline"
+//                 >
+//                   View All
+//                 </button>
+
+//               </div>
+
+
+//               <div className="space-y-4">
+
+//                 {appointments.filter((a) => a.status === "Pending").length === 0 && (
+//                   <p className="text-gray-400 text-sm">No pending requests right now.</p>
+//                 )}
+
+//                 {appointments
+//                   .filter((appointment) => appointment.status === "Pending")
+//                   .slice(0, 3)
+//                   .map((appointment) => (
+
+//                     <div
+//                       key={appointment._id}
+//                       className="border rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4"
+//                     >
+
+//                       <div className="flex items-center gap-4">
+
+//                         <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+
+//                           <Users className="text-blue-600" />
+
+//                         </div>
+
+//                         <div>
+
+//                           <h3 className="font-semibold text-gray-800">
+//                             {appointment.patient?.name}
+//                           </h3>
+
+//                           <p className="text-sm text-gray-500">
+//                             {appointment.reason}
+//                           </p>
+
+//                         </div>
+
+//                       </div>
+
+
+//                       <div className="text-sm text-gray-600">
+
+//                         📅 {formatDate(appointment.appointmentDate)}
+
+//                         <br />
+
+//                         🕒 {appointment.appointmentTime}
+
+//                       </div>
+
+
+//                       <button
+//                         onClick={() => setActiveTab("appointments")}
+//                         className="text-blue-600 font-medium"
+//                       >
+//                         Manage
+//                       </button>
+
+//                     </div>
+
+//                   ))}
+
+//               </div>
+
+//             </div>
+
+//           </>
+
+//         ) : (
+
+//           /* ================= APPOINTMENTS PAGE ================= */
+
+//           <div>
+
+//             <div className="flex items-center justify-between mb-6">
+
+//               <div>
+
+//                 <h2 className="text-2xl font-bold text-gray-800">
+//                   All Appointments
+//                 </h2>
+
+//                 <p className="text-gray-500">
+//                   Manage patient appointment requests
+//                 </p>
+
+//               </div>
+
+//               <button
+//                 onClick={() => setActiveTab("dashboard")}
+//                 className="border border-gray-300 px-5 py-2 rounded-lg hover:bg-gray-50"
+//               >
+//                 Back to Dashboard
+//               </button>
+
+//             </div>
+
+
+//             {/* ================= APPOINTMENT LIST ================= */}
+
+//             <div className="space-y-5">
+
+//               {appointments.length === 0 && (
+//                 <p className="text-gray-400 text-sm">No appointments yet.</p>
+//               )}
+
+//               {appointments.map((appointment) => (
+
+//                 <div
+//                   key={appointment._id}
+//                   className="bg-white rounded-2xl shadow-sm p-6"
+//                 >
+
+//                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+
+//                     {/* Patient Details */}
+
+//                     <div className="flex items-center gap-4">
+
+//                       <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
+
+//                         <User
+//                           size={28}
+//                           className="text-blue-600"
+//                         />
+
+//                       </div>
+
+//                       <div>
+
+//                         <h3 className="text-lg font-bold text-gray-800">
+//                           {appointment.patient?.name}
+//                         </h3>
+
+//                         <p className="text-sm text-gray-500">
+//                           Age: {appointment.patient?.age} • {appointment.patient?.gender}
+//                         </p>
+
+//                         <p className="text-sm text-gray-500 mt-1">
+//                           Reason: {appointment.reason}
+//                         </p>
+
+//                       </div>
+
+//                     </div>
+
+
+//                     {/* Time */}
+
+//                     <div>
+
+//                       <p className="text-sm text-gray-500">
+//                         Appointment Time
+//                       </p>
+
+//                       <p className="font-semibold text-gray-800 mt-1">
+//                         📅 {formatDate(appointment.appointmentDate)}
+//                       </p>
+
+//                       <p className="font-semibold text-blue-600">
+//                         🕒 {appointment.appointmentTime}
+//                       </p>
+
+//                     </div>
+
+
+//                     {/* Status */}
+
+//                     <div>
+
+//                       <span
+//                         className={`px-4 py-2 rounded-full text-sm font-semibold ${
+//                           statusStyles[appointment.status] || "bg-gray-100 text-gray-700"
+//                         }`}
+//                       >
+//                         {appointment.status}
+//                       </span>
+
+//                     </div>
+
+
+//                     {/* Action Buttons */}
+
+//                     {appointment.status === "Pending" && (
+
+//                       <div className="flex flex-wrap gap-3">
+
+//                         <button
+//                           onClick={() => acceptAppointment(appointment._id)}
+//                           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+//                         >
+//                           <CheckCircle size={18} />
+
+//                           Accept
+//                         </button>
+
+
+//                         <button
+//                           onClick={() => rejectAppointment(appointment._id)}
+//                           className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center gap-2"
+//                         >
+//                           <XCircle size={18} />
+
+//                           Reject
+//                         </button>
+
+
+//                         <button
+//                           onClick={() => openPostponeModal(appointment)}
+//                           className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition flex items-center gap-2"
+//                         >
+//                           <Timer size={18} />
+
+//                           Postpone
+//                         </button>
+
+//                       </div>
+
+//                     )}
+
+//                   </div>
+
+//                 </div>
+
+//               ))}
+
+//             </div>
+
+//           </div>
+
+//         )}
+
+//       </div>
+
+
+//       {/* ================= POSTPONE MODAL ================= */}
+
+//       {selectedAppointment && (
+
+//         <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4 z-50">
+
+//           <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl">
+
+//             <h2 className="text-xl font-bold text-gray-800">
+//               Postpone Appointment
+//             </h2>
+
+//             <p className="text-gray-500 mt-2">
+
+//               Select a new appointment date and time for{" "}
+
+//               <span className="font-semibold">
+//                 {selectedAppointment.patient?.name}
+//               </span>
+
+//             </p>
+
+//             {actionError && (
+//               <p className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-2 mt-4">
+//                 {actionError}
+//               </p>
+//             )}
+
+//             <div className="mt-6">
+
+//               <label className="block font-medium text-gray-700 mb-2">
+//                 New Appointment Date
+//               </label>
+
+//               <input
+//                 type="date"
+//                 value={newDate}
+//                 onChange={(e) => setNewDate(e.target.value)}
+//                 className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+//               />
+
+//             </div>
+
+//             <div className="mt-5">
+
+//               <label className="block font-medium text-gray-700 mb-2">
+//                 New Appointment Time
+//               </label>
+
+//               <input
+//                 type="time"
+//                 value={newTime}
+//                 onChange={(e) => setNewTime(e.target.value)}
+//                 className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+//               />
+
+//             </div>
+
+
+//             <div className="flex justify-end gap-3 mt-7">
+
+//               <button
+//                 onClick={() => {
+//                   setSelectedAppointment(null);
+//                   setActionError("");
+//                 }}
+//                 className="border border-gray-300 px-5 py-2 rounded-lg hover:bg-gray-100"
+//               >
+//                 Cancel
+//               </button>
+
+
+//               <button
+//                 onClick={confirmPostpone}
+//                 disabled={postponing}
+//                 className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-60"
+//               >
+//                 {postponing ? "Saving..." : "Confirm"}
+//               </button>
+
+//             </div>
+
+//           </div>
+
+//         </div>
+
+//       )}
+
+//     </div>
+//   );
+// };
+
+// export default DoctorHome;

@@ -13,11 +13,21 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
+    },
+
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: 6,
     },
 
     phone: {
       type: String,
       required: true,
+      unique: true,
+      trim: true,
     },
 
     specialization: {
@@ -47,6 +57,12 @@ const doctorSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+
+    role: {
+      type: String,
+      default: "doctor",
+      immutable: true,
+    },
   },
   {
     timestamps: true,
@@ -54,17 +70,21 @@ const doctorSchema = new mongoose.Schema(
 );
 
 doctorSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-    return token;
-}
+  const token = jwt.sign(
+    { _id: this._id, role: this.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "24h" }
+  );
+  return token;
+};
 
 doctorSchema.methods.comparePassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
-}
+  return await bcrypt.compare(password, this.password);
+};
 
 doctorSchema.statics.hashPassword = async function (password) {
-    return await bcrypt.hash(password, 10);
-}
+  return await bcrypt.hash(password, 10);
+};
 
 const Doctor = mongoose.model("Doctor", doctorSchema);
 

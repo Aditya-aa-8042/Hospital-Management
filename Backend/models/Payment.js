@@ -2,29 +2,31 @@ import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema(
   {
+    // Account holder who made the payment
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
+    // Patient the payment/appointment is for
     patient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: true,
     },
 
+    // Appointment this payment is for
     appointment: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
       required: true,
     },
 
-    Phone: {
+    phone: {
       type: String,
       required: true,
     },
-
 
     amount: {
       type: Number,
@@ -37,18 +39,16 @@ const paymentSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Masked account number
+    // Masked account number, e.g. XXXX1234
     accountNumber: {
       type: String,
       default: null,
-      // Example: XXXX1234
     },
 
-    // UPI ID
+    // UPI ID, e.g. abhishek@upi
     upiId: {
       type: String,
       default: null,
-      // Example: abhishek@upi
     },
 
     transactionId: {

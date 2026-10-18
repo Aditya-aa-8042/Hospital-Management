@@ -9,25 +9,10 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Actual patient details
-    patientName: {
-      type: String,
-      required: true,
-    },
-
-    patientAge: {
-      type: Number,
-      required: true,
-    },
-
-    patientGender: {
-      type: String,
-      enum: ["Male", "Female", "Other"],
-      required: true,
-    },
-
-    patientPhone: {
-      type: String,
+    // Patient selected from the dropdown (must belong to bookedBy)
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Patient",
       required: true,
     },
 
@@ -55,7 +40,7 @@ const appointmentSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Completed", "Cancelled"],
+      enum: ["Pending", "Confirmed", "Completed", "Cancelled" ,"Postponed"],
       default: "Pending",
     },
   },
@@ -64,9 +49,6 @@ const appointmentSchema = new mongoose.Schema(
   }
 );
 
-const Appointment = mongoose.model(
-  "Appointment",
-  appointmentSchema
-);
+const Appointment = mongoose.model("Appointment", appointmentSchema);
 
 export default Appointment;
