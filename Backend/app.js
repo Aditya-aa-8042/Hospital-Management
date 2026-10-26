@@ -11,6 +11,8 @@ import departmentRoutes from "./routes/Departmentroutes.js";
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
+import { DISEASES } from "./utils/diseases.js";
+
 const app = express();
 
 // ---------- Core middleware ----------
@@ -24,6 +26,12 @@ app.get("/", (req, res) => {
 });
 
 // ---------- Routes ----------
+
+// Diseases + usual specialists. Data lives in utils/diseases.js (single source of truth).
+app.get("/api/diseases", (req, res) => {
+  res.status(200).json({ success: true, data: DISEASES });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);

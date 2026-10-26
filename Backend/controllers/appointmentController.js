@@ -2,6 +2,8 @@ import Appointment from "../models/Appointment.js";
 import Patient from "../models/Patient.js";
 import Doctor from "../models/Doctor.js";
 import asyncHandler from "../utils/asyncHandler.js";
+// import { sendAppointmentConfirmationEmail } from "../utils/emailService.js";
+import {getSpecializationKeywords, escapeRegex} from "../utils/diseases.js";
 
 // @route   POST /api/appointments
 // @desc    Book an appointment. Accepts EITHER:
@@ -28,12 +30,38 @@ export const bookAppointment = asyncHandler(async (req, res) => {
     throw new Error("doctor, appointmentDate, appointmentTime and reason are required");
   }
 
-  // Confirm the doctor exists
-  const doctorExists = await Doctor.findById(doctor);
-  if (!doctorExists) {
-    res.status(404);
-    throw new Error("Selected doctor not found");
+ 
+  
+  // ---- Resolve the doctor: either explicitly chosen, or auto-assigned ----
+  let doctorDoc;
+ 
+  if (doctor) {
+    doctorDoc = await Doctor.findById(doctor);
+    if (!doctorDoc) {
+      res.status(404);
+      throw new Error("Selected doctor not found");
+    }
+  } else {
+    // No doctor chosen - auto-assign an available doctor who either lists this disease
+    // under `treats`, or whose specialization is the usual specialist for it
+    // (e.g. Heart Disease -> Cardiologist).
+    const matchConditions = [
+      { treats: { $regex: escapeRegex(disease), $options: "i" } },
+      ...getSpecializationKeywords(disease).map((keyword) => ({
+        specialization: { $regex: escapeRegex(keyword), $options: "i" },
+      })),
+    ];
+ 
+    doctorDoc = await Doctor.findOne({ isAvailable: true, $or: matchConditions });
+ 
+    if (!doctorDoc) {
+      res.status(404);
+      throw new Error(
+        `No available doctor found for "${disease}" right now. Please choose a doctor manually.`
+      );
+    }
   }
+ 
 
   let patient;
 
@@ -65,7 +93,8 @@ export const bookAppointment = asyncHandler(async (req, res) => {
   const appointment = await Appointment.create({
     bookedBy: req.user._id,
     patient: patient._id,
-    doctor,
+    doctor: doctorDoc._id,
+    disease,
     appointmentDate,
     appointmentTime,
     reason,
