@@ -12,10 +12,10 @@ const emptyDoctor = {
   experience: "",
   fees: "",
   gender: "",
-  availableTime: "",
+  availableFrom: "",
+  availableTo: "",
   availableDays: [],
   treats: "",
-  isAvailable: true,
   image: "",
 };
 
@@ -95,10 +95,10 @@ const DoctorProfile = () => {
           experience: Number(doctor.experience),
           fees: Number(doctor.fees),
           gender: doctor.gender,
-          availableTime: doctor.availableTime,
+          availableFrom: doctor.availableFrom,
+          availableTo: doctor.availableTo,
           availableDays: doctor.availableDays,
           treats: doctor.treats,
-          isAvailable: doctor.isAvailable,
           image: doctor.image,
         }),
       });
@@ -133,7 +133,7 @@ const DoctorProfile = () => {
   const requiredForCard = [
     { key: "gender", label: "Gender", filled: !!doctor.gender },
     { key: "availableDays", label: "Available Days", filled: doctor.availableDays.length > 0 },
-    { key: "availableTime", label: "Available Time", filled: !!doctor.availableTime },
+    { key: "availableTime", label: "Available Hours", filled: !!doctor.availableFrom && !!doctor.availableTo },
     { key: "treats", label: "What You Treat", filled: !!doctor.treats },
   ];
   const missingFields = requiredForCard.filter((f) => !f.filled);
@@ -159,7 +159,7 @@ const DoctorProfile = () => {
               <p className="font-semibold text-yellow-800">Complete your profile</p>
               <p className="text-sm text-yellow-700 mt-1">
                 Missing: {missingFields.map((f) => f.label).join(", ")}.
-                {" "}Patients see this on your doctor card when choosing who to book with.
+                {" "}Until your days and hours are set you appear as Unavailable, and patients see these details on your doctor card.
               </p>
             </div>
             <button
@@ -324,14 +324,25 @@ const DoctorProfile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Available Time</label>
+                  <label className="block text-gray-700 font-medium mb-2">Available From</label>
                   <input
-                    type="text"
-                    name="availableTime"
-                    value={doctor.availableTime}
+                    type="time"
+                    name="availableFrom"
+                    value={doctor.availableFrom}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    placeholder="e.g. 10:00 AM - 1:00 PM"
+                    className={inputClass(isEditing)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Available To</label>
+                  <input
+                    type="time"
+                    name="availableTo"
+                    value={doctor.availableTo}
+                    onChange={handleChange}
+                    disabled={!isEditing}
                     className={inputClass(isEditing)}
                   />
                 </div>
@@ -393,19 +404,12 @@ const DoctorProfile = () => {
                   />
                 </div>
 
-                {/* Accepting new appointments toggle */}
-                <div className="md:col-span-2 flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="isAvailable"
-                    checked={doctor.isAvailable}
-                    disabled={!isEditing}
-                    onChange={(e) => setDoctor((prev) => ({ ...prev, isAvailable: e.target.checked }))}
-                    className="accent-blue-600 w-5 h-5"
-                  />
-                  <label htmlFor="isAvailable" className="text-gray-700 font-medium">
-                    Currently accepting new appointments
-                  </label>
+                {/* Availability is automatic - explain how it's decided */}
+                <div className="md:col-span-2 bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 text-sm text-blue-800">
+                  Your Available/Unavailable status is set automatically from your days and hours.
+                  You show as <span className="font-semibold">Available</span> on your working days
+                  until your end time, and as <span className="font-semibold">Unavailable</span> on
+                  other days, after your hours finish, or if you haven't set days and hours yet.
                 </div>
 
               </div>

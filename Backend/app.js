@@ -6,12 +6,11 @@ import userRoutes from "./routes/userRoutes.js";
 import patientRoutes from "./routes/patientRoutes.js";
 import doctorRoutes from "./routes/doctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import departmentRoutes from "./routes/departmentRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import departmentRoutes from "./routes/Departmentroutes.js";  
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
-
-import { DISEASES } from "./utils/diseases.js";
+import { DISEASES, SPECIALIZATIONS } from "./utils/diseases.js";
 
 const app = express();
 
@@ -26,19 +25,19 @@ app.get("/", (req, res) => {
 });
 
 // ---------- Routes ----------
-
 // Diseases + usual specialists. Data lives in utils/diseases.js (single source of truth).
 app.get("/api/diseases", (req, res) => {
-  res.status(200).json({ success: true, data: DISEASES });
+  res.status(200).json({ success: true, data: DISEASES, specializations: SPECIALIZATIONS });
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/departments", departmentRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/department", departmentRoutes);
+
 // ---------- Error handling (must be last) ----------
 app.use(notFound);
 app.use(errorHandler);

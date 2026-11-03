@@ -6,12 +6,17 @@ import asyncHandler from "../utils/asyncHandler.js";
 //          Supports: ?specialization=Cardiologist&gender=Male&search=ananya
 // @access  Public
 export const getDoctors = asyncHandler(async (req, res) => {
-  const { specialization, gender, search } = req.query;
+  const { specialization, gender, search, treats } = req.query;
 
   const filter = {};
 
   if (specialization) {
     filter.specialization = { $regex: specialization, $options: "i" };
+  }
+
+  if (treats) {
+    // Matches doctors whose `treats` field mentions this disease/condition
+    filter.treats = { $regex: treats, $options: "i" };
   }
 
   if (gender) {
@@ -70,7 +75,10 @@ export const updateMyDoctorProfile = asyncHandler(async (req, res) => {
     "experience",
     "fees",
     "gender",
-    "availableTime",
+    "availableFrom",
+    "availableTo",
+    "availableDays",
+    "treats",
     "image",
   ];
 

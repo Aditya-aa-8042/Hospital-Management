@@ -2,15 +2,19 @@ import Appointment from "../models/Appointment.js";
 import Patient from "../models/Patient.js";
 import Doctor from "../models/Doctor.js";
 import asyncHandler from "../utils/asyncHandler.js";
-// import { sendAppointmentConfirmationEmail } from "../utils/emailService.js";
-import {getSpecializationKeywords, escapeRegex} from "../utils/diseases.js";
+import { getSpecializationKeywords, escapeRegex } from "../utils/diseases.js";
+import { isAvailableAt } from "../utils/availability.js";
 
 // @route   POST /api/appointments
 // @desc    Book an appointment. Accepts EITHER:
 //            - patientId  -> reuse an existing patient (dropdown flow)
 //          OR
-//            - name, age, gender, phone -> create a new patient first (Image 2 form flow)
-//          Both flows then create the Appointment against the chosen/created patient.
+//            - name, age, gender, phone -> create a new patient first (form flow)
+//          For the doctor, accepts EITHER:
+//            - doctor (an id) -> book with that specific doctor
+//          OR
+//            - no doctor, but `disease` -> auto-assign the first available
+//              doctor whose `treats` field matches the disease
 // @access  Private (User)
 export const bookAppointment = asyncHandler(async (req, res) => {
   const {
@@ -20,21 +24,20 @@ export const bookAppointment = asyncHandler(async (req, res) => {
     gender,
     phone,
     doctor,
+    disease,
     appointmentDate,
     appointmentTime,
     reason,
   } = req.body;
 
-  if (!doctor || !appointmentDate || !appointmentTime || !reason) {
+  if (!disease || !appointmentDate || !appointmentTime || !reason) {
     res.status(400);
-    throw new Error("doctor, appointmentDate, appointmentTime and reason are required");
+    throw new Error("disease, appointmentDate, appointmentTime and reason are required");
   }
 
- 
-  
   // ---- Resolve the doctor: either explicitly chosen, or auto-assigned ----
   let doctorDoc;
- 
+
   if (doctor) {
     doctorDoc = await Doctor.findById(doctor);
     if (!doctorDoc) {
@@ -51,31 +54,30 @@ export const bookAppointment = asyncHandler(async (req, res) => {
         specialization: { $regex: escapeRegex(keyword), $options: "i" },
       })),
     ];
- 
-    doctorDoc = await Doctor.findOne({ isAvailable: true, $or: matchConditions });
- 
+
+    // Availability is calculated from each doctor's days and hours (not stored), so
+    // fetch the matching doctors and keep one who works on the requested date and time.
+    const candidates = await Doctor.find({ $or: matchConditions });
+    doctorDoc = candidates.find((doc) => isAvailableAt(doc, appointmentDate, appointmentTime));
+
     if (!doctorDoc) {
       res.status(404);
       throw new Error(
-        `No available doctor found for "${disease}" right now. Please choose a doctor manually.`
+        `No doctor for "${disease}" is available on that day and time. Please try another date or time, or choose a doctor manually.`
       );
     }
   }
- 
 
+  // ---- Resolve the patient: either reused, or created from form fields ----
   let patient;
 
   if (patientId) {
-    // ---- Existing patient flow (dropdown) ----
-    // Must belong to the logged-in user - prevents booking with someone else's patient
     patient = await Patient.findOne({ _id: patientId, registeredBy: req.user._id });
-
     if (!patient) {
       res.status(404);
       throw new Error("Patient not found in your account");
     }
   } else {
-    // ---- New patient flow (form) ----
     if (!name || age === undefined || !gender || !phone) {
       res.status(400);
       throw new Error("name, age, gender and phone are required to register a new patient");
@@ -173,7 +175,7 @@ export const getAppointmentById = asyncHandler(async (req, res) => {
 });
 
 // @route   PATCH /api/appointments/:id/status
-// @desc    Doctor updates appointment status (Confirmed / Completed / Cancelled)
+// @desc    Doctor updates appointment status (Confirmed / Completed / Cancelled / Postponed)
 // @access  Private (Doctor - must be the assigned doctor)
 export const updateAppointmentStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
@@ -206,52 +208,50 @@ export const updateAppointmentStatus = asyncHandler(async (req, res) => {
   });
 });
 
-
 // @route   PATCH /api/appointments/:id/postpone
 // @desc    Doctor reschedules an appointment to a new date/time
 // @access  Private (Doctor - must be the assigned doctor)
 export const postponeAppointment = asyncHandler(async (req, res) => {
   const { appointmentDate, appointmentTime } = req.body;
- 
+
   if (!appointmentDate || !appointmentTime) {
     res.status(400);
     throw new Error("appointmentDate and appointmentTime are required");
   }
- 
+
   const appointment = await Appointment.findById(req.params.id);
- 
+
   if (!appointment) {
     res.status(404);
     throw new Error("Appointment not found");
   }
- 
+
   if (appointment.doctor.toString() !== req.doctor._id.toString()) {
     res.status(403);
     throw new Error("Not authorized to update this appointment");
   }
- 
+
   if (["Completed", "Cancelled"].includes(appointment.status)) {
     res.status(400);
     throw new Error(`Cannot postpone an appointment that is already ${appointment.status}`);
   }
- 
+
   appointment.appointmentDate = appointmentDate;
   appointment.appointmentTime = appointmentTime;
   appointment.status = "Postponed";
   await appointment.save();
- 
+
   const populated = await appointment.populate([
     { path: "patient" },
     { path: "bookedBy", select: "fullName email phone" },
   ]);
- 
+
   res.status(200).json({
     success: true,
     message: "Appointment postponed successfully",
     data: populated,
   });
 });
- 
 
 // @route   PATCH /api/appointments/:id/cancel
 // @desc    Logged-in user cancels their own appointment (only if still Pending/Confirmed)

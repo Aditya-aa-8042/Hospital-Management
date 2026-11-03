@@ -7,6 +7,8 @@
 //   "email": "abhi@example.com"
 // }
 
+
+
 // 2 {
 //   "role": "user",
 //   "phone": "+919341665960",
@@ -20,9 +22,65 @@
 //     "role": "doctor",
 //     "phone": "+919341338658",
 //     "password": "00..00..",
-//     "fullName": "Aayush Singh"
+//     "fullName": "Aayush Singh",
 //     "email": "aayushsingh88@gmail.com"
 // }
+
+// 4 {
+//     "role": "doctor",
+//     "phone": "+918866442200",
+//     "password": "11111111",
+//     "fullName": "Aditya"
+//     "email": "aditya20@gmail.com"
+// }
+
+// 5 {
+//     "role": "doctor",
+//     "phone": "+918844220000",
+//     "password": "00000000",
+//     "fullName": "Ithachi",
+//     "email": "ithachi00@gmail.com"
+// }
+
+// 6 {
+//     "role": "doctor",
+//     "phone": "+918420842080",
+//     "password": "123654789",
+//     "fullName": "Reecha",
+//     "email": "reecha80@example.com"
+// }
+
+
+
+// 7 {
+//     role: "doctor",
+//     phone: "+918000080000",
+//     password: "7896321",
+//     fullName: "Jhatka",
+//     email: "jhatka2005@gmail.com"
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Complete Data of the doctor 

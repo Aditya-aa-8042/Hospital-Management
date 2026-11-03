@@ -26,7 +26,7 @@ export const sendOtp = async (phone) => {
 
   // Bypass OTP sending in development if DEV_SKIP_OTP is true
     if (isBypassOn()) {
-    console.log(`[DEV_SKIP_OTP] OTP for ${phone} is ${DEV_OTP} (no SMS sent)`);
+    
     return { type: "success", message: "OTP bypassed in development" };
   }
   // If not bypassing, send the OTP via MSG91

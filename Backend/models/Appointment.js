@@ -33,6 +33,14 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Structured disease/condition, used to match against a Doctor's `treats`
+    // field when the user skips choosing a doctor manually.
+    disease: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     reason: {
       type: String,
       required: true,
@@ -40,7 +48,7 @@ const appointmentSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Completed", "Cancelled" ,"Postponed"],
+      enum: ["Pending", "Confirmed", "Completed", "Cancelled", "Postponed"],
       default: "Pending",
     },
   },

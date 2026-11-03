@@ -26,3 +26,42 @@ export const getSpecializationKeywords = (diseaseName) =>
 
 // Escapes characters like ( ) / . so user-typed text can't break the regex query
 export const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Specializations offered in the doctor registration dropdown.
+// Keep names containing the keyword fragments above (e.g. "Cardiologist" contains
+// "cardio") so disease matching and auto-assign keep working.
+export const SPECIALIZATIONS = [
+  "General Physician",
+  "Anesthesiologist",
+  "Cardiologist",
+  "Cardiothoracic Surgeon",
+  "Dentist",
+  "Dermatologist",
+  "Emergency Medicine",
+  "Endocrinologist",
+  "ENT Specialist",
+  "Gastroenterologist",
+  "General Surgeon",
+  "Geriatrician",
+  "Gynecologist",
+  "Hematologist",
+  "Infectious Disease Specialist",
+  "Nephrologist",
+  "Neurologist",
+  "Neurosurgeon",
+  "Obstetrician",
+  "Oncologist",
+  "Ophthalmologist",
+  "Orthopedic Surgeon",
+  "Pain Management Specialist",
+  "Pathologist",
+  "Pediatrician",
+  "Physiotherapist",
+  "Plastic Surgeon",
+  "Psychiatrist",
+  "Pulmonologist",
+  "Radiologist",
+  "Rheumatologist",
+  "Sports Medicine Specialist",
+  "Urologist",
+];

@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { useDiseases } from "../Hooks/useDiseases";
 
 // Change this to your backend URL (must match PORT in backend .env)
 const API_URL = "http://localhost:5000";
 
 const RegisterUser = () => {
+  // Specialization options come from the backend (utils/diseases.js)
+  const { specializations, loading: loadingSpecializations } = useDiseases();
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -83,7 +87,7 @@ const RegisterUser = () => {
     if (formData.password.length < 6) return "Password must be at least 6 characters";
 
     if (formData.role === "doctor") {
-      if (!formData.specialization.trim()) return "Please enter your specialization";
+      if (!formData.specialization.trim()) return "Please select your specialization";
       if (formData.experience === "" || Number(formData.experience) < 0)
         return "Please enter your years of experience";
       if (formData.fees === "" || Number(formData.fees) < 0)
@@ -273,15 +277,20 @@ const RegisterUser = () => {
               <label className="block text-sm font-medium text-gray-700 mt-5 mb-2">
                 Specialization
               </label>
-              <input
-                type="text"
+              <select
                 name="specialization"
                 value={formData.specialization}
                 onChange={handleChange}
                 disabled={otpSent}
-                placeholder="e.g. Cardiologist"
                 className={inputClass}
-              />
+              >
+                <option value="">
+                  {loadingSpecializations ? "Loading..." : "Select your specialization"}
+                </option>
+                {specializations.map((spec) => (
+                  <option key={spec} value={spec}>{spec}</option>
+                ))}
+              </select>
 
               <div className="flex gap-4 mt-5">
                 <div className="w-1/2">
@@ -300,7 +309,7 @@ const RegisterUser = () => {
                   />
                 </div>
 
-                {/* <div className="w-1/2">
+                <div className="w-1/2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Fees (₹)
                   </label>
@@ -314,7 +323,7 @@ const RegisterUser = () => {
                     placeholder="e.g. 600"
                     className={inputClass}
                   />
-                </div> */}
+                </div>
               </div>
             </>
           )}
