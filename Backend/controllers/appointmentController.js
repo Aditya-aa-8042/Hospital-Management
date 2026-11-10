@@ -231,7 +231,7 @@ export const postponeAppointment = asyncHandler(async (req, res) => {
     throw new Error("Not authorized to update this appointment");
   }
 
-  if (["Completed", "Cancelled"].includes(appointment.status)) {
+  if (["Completed", "Cancelled", "Cancelled by patient"].includes(appointment.status)) {
     res.status(400);
     throw new Error(`Cannot postpone an appointment that is already ${appointment.status}`);
   }
@@ -254,7 +254,7 @@ export const postponeAppointment = asyncHandler(async (req, res) => {
 });
 
 // @route   PATCH /api/appointments/:id/cancel
-// @desc    Logged-in user cancels their own appointment (only if still Pending/Confirmed)
+// @desc    Logged-in user cancels their own appointment (only before it is finished)
 // @access  Private (User)
 export const cancelAppointment = asyncHandler(async (req, res) => {
   const appointment = await Appointment.findOne({
@@ -267,17 +267,72 @@ export const cancelAppointment = asyncHandler(async (req, res) => {
     throw new Error("Appointment not found");
   }
 
-  if (["Completed", "Cancelled"].includes(appointment.status)) {
+  if (["Completed", "Cancelled", "Cancelled by patient"].includes(appointment.status)) {
     res.status(400);
     throw new Error(`Cannot cancel an appointment that is already ${appointment.status}`);
   }
 
-  appointment.status = "Cancelled";
+  // Saved as its own status, so it isn't mistaken for the doctor rejecting it
+  appointment.status = "Cancelled by patient";
+  appointment.reminderMinutesBefore = null;
   await appointment.save();
+
+  const populated = await appointment.populate([
+    { path: "patient" },
+    { path: "doctor", select: "-password" },
+  ]);
 
   res.status(200).json({
     success: true,
     message: "Appointment cancelled",
-    data: appointment,
+    data: populated,
+  });
+});
+
+// Reminder choices, in minutes before the appointment: 30 min, 1 hour, 2 hours, 1 day
+const ALLOWED_REMINDER_MINUTES = [30, 60, 120, 1440];
+
+// @route   PATCH /api/appointments/:id/reminder
+// @desc    Patient sets (or removes) a reminder for an appointment the doctor has confirmed.
+//          Body: { minutesBefore: 30 | 60 | 120 | 1440 }, or { minutesBefore: null } to remove it.
+// @access  Private (User)
+export const setAppointmentReminder = asyncHandler(async (req, res) => {
+  const { minutesBefore } = req.body;
+  const isRemoving = minutesBefore === null;
+
+  if (!isRemoving && !ALLOWED_REMINDER_MINUTES.includes(minutesBefore)) {
+    res.status(400);
+    throw new Error(
+      `minutesBefore must be one of ${ALLOWED_REMINDER_MINUTES.join(", ")}, or null to remove the reminder`
+    );
+  }
+
+  const appointment = await Appointment.findOne({
+    _id: req.params.id,
+    bookedBy: req.user._id,
+  });
+
+  if (!appointment) {
+    res.status(404);
+    throw new Error("Appointment not found");
+  }
+
+  if (!isRemoving && appointment.status !== "Confirmed") {
+    res.status(400);
+    throw new Error("A reminder can only be set after the doctor has confirmed the appointment");
+  }
+
+  appointment.reminderMinutesBefore = minutesBefore;
+  await appointment.save();
+
+  const populated = await appointment.populate([
+    { path: "patient" },
+    { path: "doctor", select: "-password" },
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: isRemoving ? "Reminder removed" : "Reminder set",
+    data: populated,
   });
 });

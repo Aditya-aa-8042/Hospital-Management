@@ -46,10 +46,20 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
 
+    // "Cancelled" = the doctor rejected it. "Cancelled by patient" = the patient cancelled it
+    // themselves (kept separate so a patient's cancellation isn't counted as a rejection).
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Completed", "Cancelled", "Postponed"],
+      enum: ["Pending", "Confirmed", "Completed", "Cancelled", "Cancelled by patient", "Postponed"],
       default: "Pending",
+    },
+
+    // How many minutes before the appointment the patient wants to be reminded
+    // (30, 60, 120 or 1440). null = no reminder. It is relative to the appointment, so if the
+    // doctor postpones the appointment the reminder moves with it.
+    reminderMinutesBefore: {
+      type: Number,
+      default: null,
     },
   },
   {

@@ -7,11 +7,11 @@ import LoginUserPage from './Pages/LoginUserPage';
 import Profile from './Pages/Profile';
 import Appointment from './Pages/Appointment';
 import Doctors from './Pages/Doctors';
-// import DoctorHome from "./Pages/DoctorHome";
 import Department from "./Pages/Department";
 import DoctorDashboard from "./Pages/DoctorDashboard";
 import DoctorAppointments from "./Pages/DoctorAppointments";
 import DoctorProfile from "./Pages/DoctorProfile";
+import AppointmentDetails from "./Pages/AppointmentDetails";
 
 
 
@@ -32,6 +32,8 @@ const App = () => {
       <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
       <Route path="/doctor/appointments" element={<DoctorAppointments />} />
       <Route path="/doctor/profile" element={<DoctorProfile />} />
+      {/* <Route path="/appointments/:id" element={<AppointmentDetails />} /> */}
+       <Route path="/appointments" element={<AppointmentDetails/>} />
 
     </Routes>
 

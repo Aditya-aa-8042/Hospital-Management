@@ -1,3 +1,4 @@
+
 import express from "express";
 import {
   bookAppointment,
@@ -7,6 +8,7 @@ import {
   updateAppointmentStatus,
   postponeAppointment,
   cancelAppointment,
+  setAppointmentReminder,
 } from "../controllers/appointmentController.js";
 import { protect, authorize } from "../middleware/authMiddleware.js";
 
@@ -19,6 +21,7 @@ router.use(protect);
 router.post("/", authorize("patient", "admin"), bookAppointment);
 router.get("/my", authorize("patient", "admin"), getMyAppointments);
 router.patch("/:id/cancel", authorize("patient", "admin"), cancelAppointment);
+router.patch("/:id/reminder", authorize("patient", "admin"), setAppointmentReminder);
 
 // Doctor routes
 router.get("/doctor", authorize("doctor"), getDoctorAppointments);

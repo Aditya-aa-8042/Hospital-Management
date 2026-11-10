@@ -9,6 +9,7 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import departmentRoutes from "./routes/departmentRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
+
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import { DISEASES, SPECIALIZATIONS } from "./utils/diseases.js";
 

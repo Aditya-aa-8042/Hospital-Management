@@ -17,4 +17,3 @@ router.post("/forgot-password/send-otp", forgotPasswordSendOtp);
 router.post("/forgot-password/reset", forgotPasswordReset);
 
 export default router;
- 
