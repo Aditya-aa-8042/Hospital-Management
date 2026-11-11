@@ -54,6 +54,16 @@ const appointmentSchema = new mongoose.Schema(
       default: "Pending",
     },
 
+    // Payment is requested only after the doctor confirms the appointment.
+    paymentStatus: {
+      type: String,
+      enum: ["NotRequired", "Pending", "Paid", "Expired", "Cancelled"],
+      default: "NotRequired",
+    },
+    confirmedAt: { type: Date, default: null },
+    paymentDeadlineAt: { type: Date, default: null },
+    cancellationReason: { type: String, default: "" },
+
     // How many minutes before the appointment the patient wants to be reminded
     // (30, 60, 120 or 1440). null = no reminder. It is relative to the appointment, so if the
     // doctor postpones the appointment the reminder moves with it.

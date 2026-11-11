@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { useDiseases } from "../Hooks/useDiseases";
 
 // Change this to your backend's port (where Express/Node runs)
@@ -194,6 +195,16 @@ const Appointment = () => {
       </div>
 
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+
+        <button
+          type="button"
+          onClick={() => (window.history.state?.idx > 0 ? navigate(-1) : navigate("/"))}
+          aria-label="Go back and leave the appointment form"
+          title="Go back"
+          className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <ArrowLeft size={20} aria-hidden="true" />
+        </button>
 
         {(error || diseasesError) && (
           <p className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">

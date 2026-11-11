@@ -12,6 +12,9 @@ import DoctorDashboard from "./Pages/DoctorDashboard";
 import DoctorAppointments from "./Pages/DoctorAppointments";
 import DoctorProfile from "./Pages/DoctorProfile";
 import AppointmentDetails from "./Pages/AppointmentDetails";
+import ServiceDetails from "./Pages/ServiceDetails";
+import Services from "./Pages/Services";
+import Emergency from "./Pages/Emergency";
 
 
 
@@ -25,7 +28,7 @@ const App = () => {
       <Route path="/register" element={<RegisterUser />} />
       <Route path="/" element={<Home/>} /> 
       <Route path="/profile" element={<Profile />} />
-      <Route path="/about" element={<About />} />
+      <Route path="/about" element={<About/>} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/appointment" element={<Appointment />} />
       <Route path="/doctors" element={<Doctors />} />
@@ -34,6 +37,9 @@ const App = () => {
       <Route path="/doctor/profile" element={<DoctorProfile />} />
       {/* <Route path="/appointments/:id" element={<AppointmentDetails />} /> */}
        <Route path="/appointments" element={<AppointmentDetails/>} />
+      <Route path="/services" element={<Services />} />
+      <Route path="/services/:serviceSlug" element={<ServiceDetails />} />
+      <Route path="/emergency" element={<Emergency />} />
 
     </Routes>
 

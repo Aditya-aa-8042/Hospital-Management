@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  createPayment,
+  createRazorpayPaymentLink,
   getMyPayments,
   getPaymentById,
 } from "../controllers/paymentController.js";
@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(protect);
 router.use(authorize("patient", "admin"));
 
-router.post("/", createPayment);
+router.post("/link", createRazorpayPaymentLink);
 router.get("/my", getMyPayments);
 router.get("/:id", getPaymentById);
 

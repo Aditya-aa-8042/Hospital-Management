@@ -35,9 +35,17 @@ const paymentSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["UPI", "Card", "Net Banking", "Cash"],
+      enum: ["UPI", "Card", "Net Banking", "Cash", "Wallet", "Gateway", "Other"],
       required: true,
+      default: "Gateway",
     },
+
+    provider: { type: String, enum: ["manual", "razorpay"], default: "manual" },
+    providerPaymentLinkId: { type: String, unique: true, sparse: true },
+    providerPaymentId: { type: String, unique: true, sparse: true },
+    amountPaise: { type: Number, min: 1 },
+    currency: { type: String, default: "INR" },
+    paymentDeadlineAt: { type: Date, default: null },
 
     // Masked account number, e.g. XXXX1234
     accountNumber: {
@@ -59,7 +67,7 @@ const paymentSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Success", "Failed", "Refunded"],
+      enum: ["Pending", "Success", "Failed", "Refunded", "Expired", "Cancelled"],
       default: "Pending",
     },
 

@@ -4,6 +4,22 @@ import Doctor from "../models/Doctor.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { getSpecializationKeywords, escapeRegex } from "../utils/diseases.js";
 import { isAvailableAt } from "../utils/availability.js";
+import { cancelPendingPaymentLink } from "./paymentController.js";
+
+const paymentDeadlineForVisit = (appointmentDate, appointmentTime, confirmedAt = new Date()) => {
+  const day = new Date(appointmentDate).toISOString().slice(0, 10);
+  const match = /^(\d{1,2}):(\d{2})$/.exec(appointmentTime || "");
+  if (!match) return null;
+  // Appointment dates/times are entered in India local time in this app.
+  const visitAt = new Date(`${day}T${match[1].padStart(2, "0")}:${match[2]}:00+05:30`);
+  if (Number.isNaN(visitAt.getTime())) return null;
+  const proposedDeadline = Math.min(
+    confirmedAt.getTime() + 12 * 60 * 60 * 1000,
+    visitAt.getTime() - 15 * 60 * 1000
+  );
+  const deadline = new Date(proposedDeadline);
+  return deadline > confirmedAt ? deadline : null;
+};
 
 // @route   POST /api/appointments
 // @desc    Book an appointment. Accepts EITHER:
@@ -198,6 +214,28 @@ export const updateAppointmentStatus = asyncHandler(async (req, res) => {
     throw new Error("Not authorized to update this appointment");
   }
 
+  const wasConfirmed = appointment.status === "Confirmed";
+  if (status === "Cancelled" && appointment.paymentStatus === "Pending") {
+    const alreadyPaid = await cancelPendingPaymentLink(appointment._id);
+    if (alreadyPaid) {
+      res.status(409);
+      throw new Error("This appointment has already been paid. Contact the hospital to cancel and request a refund.");
+    }
+    appointment.paymentStatus = "Cancelled";
+    appointment.paymentDeadlineAt = null;
+  }
+  if (status === "Confirmed" && !wasConfirmed) {
+    const confirmedAt = new Date();
+    const paymentDeadlineAt = paymentDeadlineForVisit(appointment.appointmentDate, appointment.appointmentTime, confirmedAt);
+    if (!paymentDeadlineAt) {
+      res.status(400);
+      throw new Error("This appointment is too soon for online prepayment. Please choose a time at least 15 minutes from now or arrange payment directly.");
+    }
+    appointment.confirmedAt = confirmedAt;
+    appointment.paymentDeadlineAt = paymentDeadlineAt;
+    appointment.paymentStatus = "Pending";
+    appointment.cancellationReason = "";
+  }
   appointment.status = status;
   await appointment.save();
 
@@ -236,9 +274,23 @@ export const postponeAppointment = asyncHandler(async (req, res) => {
     throw new Error(`Cannot postpone an appointment that is already ${appointment.status}`);
   }
 
+  let nextPaymentDeadline = null;
+  if (appointment.paymentStatus === "Pending") {
+    nextPaymentDeadline = paymentDeadlineForVisit(appointmentDate, appointmentTime);
+    if (!nextPaymentDeadline) {
+      res.status(400);
+      throw new Error("The new appointment time is too soon for online prepayment. Please choose a later time.");
+    }
+    await cancelPendingPaymentLink(appointment._id);
+  }
+
   appointment.appointmentDate = appointmentDate;
   appointment.appointmentTime = appointmentTime;
   appointment.status = "Postponed";
+  if (nextPaymentDeadline) {
+    appointment.confirmedAt = new Date();
+    appointment.paymentDeadlineAt = nextPaymentDeadline;
+  }
   await appointment.save();
 
   const populated = await appointment.populate([
@@ -272,6 +324,15 @@ export const cancelAppointment = asyncHandler(async (req, res) => {
     throw new Error(`Cannot cancel an appointment that is already ${appointment.status}`);
   }
 
+  if (appointment.paymentStatus === "Pending") {
+    const alreadyPaid = await cancelPendingPaymentLink(appointment._id);
+    if (alreadyPaid) {
+      res.status(409);
+      throw new Error("This appointment has already been paid. Contact the hospital to cancel and request a refund.");
+    }
+    appointment.paymentStatus = "Cancelled";
+    appointment.paymentDeadlineAt = null;
+  }
   // Saved as its own status, so it isn't mistaken for the doctor rejecting it
   appointment.status = "Cancelled by patient";
   appointment.reminderMinutesBefore = null;

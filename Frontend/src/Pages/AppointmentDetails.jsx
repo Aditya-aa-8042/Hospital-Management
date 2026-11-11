@@ -146,9 +146,15 @@ export const doctorLabel = (doctor) => {
 // APPOINTMENT CARD
 // ==========================================
 
-function AppointmentItem({ appointment, now, onCancel, onSetReminder }) {
+function AppointmentItem({ appointment, now, onCancel, onSetReminder, onPay, paying }) {
 
-  const status = STATUS_CONFIG[appointment.status] || {
+  const status = appointment.cancellationReason === "Payment window expired"
+    ? {
+        label: "Payment expired",
+        badge: "bg-gray-100 text-gray-700",
+        note: "The appointment was cancelled because payment was not completed within 12 hours of doctor confirmation.",
+      }
+    : STATUS_CONFIG[appointment.status] || {
     label: appointment.status,
     badge: "bg-gray-100 text-gray-700",
     note: "",
@@ -163,6 +169,11 @@ function AppointmentItem({ appointment, now, onCancel, onSetReminder }) {
   const canCancel = appointment.status === "Pending";
   const canSetReminder = appointment.status === "Confirmed" && isStillAhead;
   const showReminder = reminderAt && ["Confirmed", "Postponed"].includes(appointment.status);
+  const paymentDeadline = appointment.paymentDeadlineAt ? new Date(appointment.paymentDeadlineAt) : null;
+  const canPay = ["Confirmed", "Postponed"].includes(appointment.status)
+    && appointment.paymentStatus === "Pending"
+    && paymentDeadline
+    && paymentDeadline > now;
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
@@ -186,10 +197,23 @@ function AppointmentItem({ appointment, now, onCancel, onSetReminder }) {
           </div>
         </div>
 
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status.badge}`}>
-          {status.label}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status.badge}`}>
+            {status.label}
+          </span>
+          {appointment.paymentStatus && appointment.paymentStatus !== "NotRequired" && (
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${appointment.paymentStatus === "Paid" ? "bg-green-100 text-green-700" : appointment.paymentStatus === "Pending" ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-600"}`}>
+              {appointment.paymentStatus === "Paid" ? "Paid" : appointment.paymentStatus === "Pending" ? "Payment due" : appointment.paymentStatus}
+            </span>
+          )}
+        </div>
       </div>
+
+      {canPay && (
+        <p className="mt-4 text-right text-xs text-orange-700">
+          Pay by {paymentDeadline.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })} to keep this appointment.
+        </p>
+      )}
 
       {/* Details */}
       <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mt-5 text-sm text-gray-700">
@@ -258,7 +282,7 @@ function AppointmentItem({ appointment, now, onCancel, onSetReminder }) {
       </div>
 
       {/* Actions */}
-      {(canCancel || canSetReminder) && (
+      {(canCancel || canSetReminder || canPay) && (
         <div className="border-t border-gray-100 mt-4 pt-4 flex flex-wrap items-center justify-end gap-2">
           {canCancel && (
             <button
@@ -279,6 +303,16 @@ function AppointmentItem({ appointment, now, onCancel, onSetReminder }) {
               {appointment.reminderMinutesBefore ? "Change Reminder" : "Set Reminder"}
             </button>
           )}
+
+          {canPay && (
+            <button
+              onClick={() => onPay(appointment)}
+              disabled={paying}
+              className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60"
+            >
+              {paying ? "Opening secure payment..." : `Pay ₹${Number(appointment.doctor?.fees || 0).toLocaleString("en-IN")} now`}
+            </button>
+          )}
         </div>
       )}
 
@@ -291,6 +325,7 @@ export default function AppointmentCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionId, setActionId] = useState(null);
+  const [payingId, setPayingId] = useState(null);
   const [now, setNow] = useState(() => new Date());
 
   const authHeaders = useCallback(() => ({
@@ -380,6 +415,30 @@ export default function AppointmentCard() {
     await updateAppointment(appointment, `/api/appointments/${appointment._id}/reminder`, { minutesBefore: selected.minutes }, "Reminder saved.");
   };
 
+  const handlePay = async (appointment) => {
+    setPayingId(appointment._id);
+    setError("");
+    try {
+      const response = await fetch(`${API_URL}/api/payments/link`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ appointmentId: appointment._id }),
+      });
+      const result = await parseResponse(response);
+      if (result.paid) {
+        await loadAppointments();
+      } else if (result.shortUrl) {
+        window.location.assign(result.shortUrl);
+      } else {
+        throw new Error("The secure payment page could not be opened.");
+      }
+    } catch (err) {
+      setError(err.message || "Could not start payment. Please try again.");
+    } finally {
+      setPayingId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -405,7 +464,7 @@ export default function AppointmentCard() {
           <div className="space-y-5">
             {appointments.map((appointment) => (
               <div key={appointment._id} className={actionId === appointment._id ? "opacity-60 pointer-events-none" : ""}>
-                <AppointmentItem appointment={appointment} now={now} onCancel={handleCancel} onSetReminder={handleReminder} />
+                <AppointmentItem appointment={appointment} now={now} onCancel={handleCancel} onSetReminder={handleReminder} onPay={handlePay} paying={payingId === appointment._id} />
               </div>
             ))}
           </div>

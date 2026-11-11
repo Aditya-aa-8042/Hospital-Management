@@ -8,6 +8,9 @@ import doctorRoutes from "./routes/doctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import departmentRoutes from "./routes/departmentRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import serviceBookingRoutes from "./routes/serviceBookingRoutes.js";
+import ambulanceRequestRoutes from "./routes/ambulanceRequestRoutes.js";
+import { handleRazorpayWebhook } from "./controllers/paymentController.js";
 
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -17,6 +20,8 @@ const app = express();
 
 // ---------- Core middleware ----------
 app.use(cors()); // TODO: restrict origin to your frontend URL in production, e.g. cors({ origin: "https://yourfrontend.com" })
+// Razorpay signs the exact raw webhook bytes. Register this before JSON parsing.
+app.post("/api/payments/webhook", express.raw({ type: "application/json" }), handleRazorpayWebhook);
 app.use(express.json()); // parses incoming JSON request bodies
 app.use(express.urlencoded({ extended: true }));
 
@@ -38,6 +43,8 @@ app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/service-bookings", serviceBookingRoutes);
+app.use("/api/ambulance-requests", ambulanceRequestRoutes);
 
 // ---------- Error handling (must be last) ----------
 app.use(notFound);

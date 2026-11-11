@@ -2,13 +2,7 @@ import Navbar from "../Component/Navbar";
 
 const About = () => {
   const services = [
-    {
-      title: "Full Body Check",
-      description:
-        "Complete health check-up packages to monitor your overall health.",
-      image:
-        "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80",
-    },
+    
     {
       title: "Online Bill Pay Procedure",
       description:
@@ -184,7 +178,9 @@ const About = () => {
                     {service.description}
                   </p>
 
-                  <button className="mt-5 text-blue-600 font-semibold hover:text-blue-800">
+                  <button
+                  
+                  className="mt-5 text-blue-600 font-semibold hover:text-blue-800">
                     Learn More →
                   </button>
                 </div>
